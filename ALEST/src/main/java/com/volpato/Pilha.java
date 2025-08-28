@@ -27,8 +27,8 @@ public class Pilha{
         return true;
     }
     //remove e retorna o elemento do topo da pilha 
-    //  (erro se a pilha estiver vazia)
-    public int pop(){
+    //  (erro se a pilha estiver vazia) //complexidade: constante
+    public int pop(){ 
         if(topo>0){
             topo--;
             return arranjo[topo];
@@ -37,26 +37,31 @@ public class Pilha{
     }
 
     //retorna, mas não remove, o elemento do topo da pilha 
-    // (erro se a pilha estiver vazia)
-    public int top(){        
-        return 0;
+    // (erro se a pilha estiver vazia) //complexidade: constante
+    public int top(){    
+        //se a pilha estiver vazia
+        if(topo == 0) {
+            throw new RuntimeException("A pilha está vazia"); 
+        }
+            return arranjo[topo-1]; //topo-1 porque o vetor tem 6 posições mas começa em 0
     }
 
-    //retorna o número de elementos da pilha
+    //retorna o número de elementos da pilha //complexidade: constante
     public int size(){        
-        return 0;
+        return topo;
     }
 
-    //retorna true se a pilha estiver vazia, e false caso contrário
+    //retorna true se a pilha estiver vazia, e false caso contrário //complexidade: constante
     public boolean isEmpty(){        
-        return false;
+        return (topo==0);
     }
 
-    //esvazia a pilha
-    public void clear(){        
+    //esvazia a pilha //complexidade: constante
+    public void clear(){    
+        topo=0;    
     }
 
-    public String toString(){
+    public String toString(){ //append adiciona no final //complexidade: linear
         StringBuilder sb = new StringBuilder();
         sb.append("0->[");
         for(int i=0; i<topo; i++){
