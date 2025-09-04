@@ -1,6 +1,6 @@
 package com.volpato;
 
-public class App {
+public class ListaEstatica {
     public static void main(String[] args) {
         System.out.println("Hello, world! Projeto ORDENACAO criado com sucesso.");
     }
