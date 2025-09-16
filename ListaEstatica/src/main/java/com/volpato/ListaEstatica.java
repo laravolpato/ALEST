@@ -1,6 +1,5 @@
 package com.volpato;
 
-
 public class ListaEstatica {
 
     private int [] arranjo;
@@ -35,30 +34,49 @@ public class ListaEstatica {
         return true;
     }
     public void add(int index, int element){
-      ValidaPosicao(index);
-      aumentaAEstrutura();
+        validaPosicao(index);
+        aumentaAEstrutura();
 
-    for(int idx=fimDaLista; idx>index)
+        for(int idx=fimDaLista; idx>index; idx--)
+            arranjo[idx]=arranjo[idx-1];
+        arranjo[index]=element;
+
+        fimDaLista++;
+    }
     
-}
     //public boolean addAll(int[] c) 
+    
     //public boolean addAll(int index, int[] c) 
+
     public void clear(){
         this.fimDaLista=0;
     }
     public boolean contains(int o){
-        for(int idx=0; idx<fimDaLista; idx++)
-    } 
+        return (indexOf(o)!=-1);
+    }
+
     public int get(int index){
         validaPosicao(index);
         return arranjo[index];
     }
-    //public int indexOf(int o) 
+
+    public int indexOf(int o){
+        for(int idx=0; idx<fimDaLista; idx++)
+            if(arranjo[idx]==o) return idx;
+        return -1;
+    }
+
     public boolean isEmpty(){
         return this.fimDaLista==0;
     }
-    //public int lastIndexOf(int o) 
-    public int remove(int index){
+
+    public int lastIndexOf(int o){
+        for(int idx=fimDaLista-1; idx>=0; idx--)
+            if(arranjo[idx]==o) return idx;
+        return -1;
+    }
+
+    public int removeByIdx(int index){
         validaPosicao(index);
 
         //salva valor a ser retornado
@@ -92,12 +110,30 @@ public class ListaEstatica {
         if((index >= fimDaLista)||(index<0))
             throw new RuntimeException("A posição index:"+index+" é inválida");
     }
-    //public boolean remove(int o) 
+
+    public boolean removeByValue(int o) {
+
+        int idx = indexOf(o);
+        if(idx==-1)
+            return false;
+        removeByIdx(idx);
+        return true;
+
+    }
+
     //public boolean removeAll(int[] c) 
-    //public int set(int index, int element) 
+
+    public int set(int index, int element){
+        validaPosicao(index);
+        int oldValue=arranjo[index];
+        arranjo[index]=element;
+        return oldValue;
+    }
+
     public int size(){
         return this.fimDaLista;
     }
+
     //public int[] subList(int fromIndex, int toIndex) 
 
     public String toString(){
