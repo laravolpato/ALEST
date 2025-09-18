@@ -172,7 +172,7 @@ public class ListaEstatica {
 
         System.out.println("O conteudo da posicao 2 é "+le.get(2));
 
-        le.remove(1);
+        le.removeByIdx(1);
         System.out.println(le);
 
     }
