@@ -58,7 +58,46 @@ public class ListaSimplesmenteEncadeada {
         return true;
     }
 
-    //public void add(int index, int element){    } <-2
+    public void add(int index, int element){
+        if(!validaIndice(index, nNodos))
+            throw new IndexOutOfBoundsException("Indice inválido");
+
+        Nodo novoNodo = new Nodo(element);
+
+        // head
+        if(index==0){
+            novoNodo.proximo=head;
+            head=novoNodo;
+            if(nNodos==0)
+                tail=head;
+        }
+        //meio
+        else if(index<nNodos){
+        
+            Nodo aux=head;
+            int counter=0;
+            while(counter!=index-1){
+                aux = aux.proximo;
+                counter++;
+            }
+            novoNodo.proximo=aux.proximo;
+            aux.proximo=novoNodo;
+        }
+        // insere como tail
+        else{
+            tail=novoNodo;
+        }
+
+        this.nNodos++;
+        
+    }
+
+    private boolean validaIndice(int index, int finalValidIndex){
+        if((index<0)||(index>finalValidIndex))
+            return false;
+        else
+            return true;
+    }
     
     //public boolean addAll(int[] c) 
     
@@ -74,28 +113,38 @@ public class ListaSimplesmenteEncadeada {
 
     public int get(int index){
         if(index < 0 || index >= nNodos){
-            throw new IndexOutOfBoundsException("índice inválido.");
+            throw new IndexOutOfBoundsException("indice invalido");
         }
         Nodo aux = head;
         int cont = 0;
         while(index != cont){
             aux = aux.proximo;
-            cont ++;
+            cont++;
         }
         return aux.valor;
     }
+    
 
-
-    public int indexOf(int o){
+    public int indexOf(int o){    
+        int cont=0;
+        /*
         Nodo johnyWalker = this.head;
-        int cont = 0;
         while (johnyWalker!=null) {
             if(johnyWalker.valor == o)
-               return cont;
+                 return cont;
             johnyWalker=johnyWalker.proximo;
             cont++;
         }
+        */
+        for(Nodo johnyWalker=this.head; // inicialização
+            johnyWalker!=null;          // condição de permanenia
+            johnyWalker=johnyWalker.proximo, cont++){ // atualização das variaveis de controle
 
+            if(johnyWalker.valor==o)
+                return cont;
+        }
+        return -1;
+    }
 
     public boolean isEmpty(){
         //return (this.tail==null);
@@ -103,20 +152,46 @@ public class ListaSimplesmenteEncadeada {
         return (this.nNodos==0);
     }
 
-    public int lastIndexOf(int o){  //custo linear
-        int ultimaposicao = -1;
-        Nodo auxNodo = head;
-        int idx = o;
-        while(auxNodo != null){
-            if(auxNodo.valor == o)
-            ultimaposicao = idx;
-            auxNodo = auxNodo.proximo;
+    public int lastIndexOf(int o){    
+        Nodo aux=head;
+        int idx=0,savedIdx=-1;        
+        while (aux!=null) {
+            if(aux.valor==o) savedIdx=idx;
+            aux=aux.proximo;
             idx++;
         }
-        return ultimaposicao;
+        return savedIdx;
     }
 
-    //public int removeByIdx(int index){    }  <- 2
+    public int removeByIdx(int index){
+        if(! validaIndice(index, this.nNodos-1))
+            throw new IndexOutOfBoundsException("O indice é invalido");
+        
+        Nodo aux;
+        Nodo nodoQueSeraEliminado;
+        if(index==0){
+            nodoQueSeraEliminado=head;
+            head=nodoQueSeraEliminado.proximo;
+            nodoQueSeraEliminado.proximo=null;
+            if(this.nNodos==1)
+                tail=null;
+        }
+        else{        
+            aux=head;
+            int counter=0;
+            while (counter!=index-1) {
+                aux=aux.proximo;
+                counter++;            
+            }
+            nodoQueSeraEliminado = aux.proximo;        
+            aux.proximo=nodoQueSeraEliminado.proximo;
+            nodoQueSeraEliminado.proximo=null;
+        }
+
+        this.nNodos--;
+
+        return nodoQueSeraEliminado.valor;
+    }
 
     //public boolean removeByValue(int o) {    } <- 2
 
@@ -179,5 +254,5 @@ public class ListaSimplesmenteEncadeada {
         //System.out.println(lse);
 
     }
+   
 }
-    
