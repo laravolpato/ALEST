@@ -160,23 +160,100 @@ public class ArvoreGenerica {
     // exige caminhamento
     public Integer getParent(Integer e){
         Nodo aux = findNode(raiz, e);
-        
+
+        if(aux!=null) 
+            if(aux.pai==null)       // aí eu sei que estou me referindo a raiz
+            //if(isRoot(aux.valor)) // alternativa para saber se é a raiz
+            //if(aux==raiz)         // alternativa para saber se é a raiz
+              return null;
+            else
+              return aux.pai.valor;
+
+        //if((aux!=null) && (aux!=raiz)) return aux.pai.valor;
+
+        return null;
     }    
     // exige caminhamento
     public boolean removeBranch(Integer e){
+    if(e==null)
+        throw new IllegalArgumentException("Valor passado é nulo");
+    if(raiz==null)
         return false;
+
+    Nodo alvo = findNode(raiz, e);
+    if(alvo==null)
+        return false;
+
+    if(alvo==raiz){
+        clear();
+        return true;
     }
+
+    Nodo pai = alvo.pai;
+
+    if(pai==null){
+        LinkedList<Nodo> fila = new LinkedList<>();
+        fila.add(raiz);
+        pai = null;
+        while(fila.size()>0 && pai==null){
+            Nodo atual = fila.remove(0);
+            for(Nodo f: atual.filhos){
+                if(f==alvo){
+                    pai = atual;
+                    break;
+                }
+                fila.add(f);
+            }
+        }
+    }
+
+    if(pai==null)
+        return false;
+
+    boolean removed = pai.filhos.remove(alvo);
+    if(!removed) return false; 
+
+    int removidos = countNodes(alvo);
+    nNodos -= removidos;
+    return true;
+}
+
+    private int countNodes(Nodo ref){
+        if(ref==null) return 0;
+        int c=1;
+        for(Nodo f: ref.filhos)
+            c += countNodes(f);
+        return c;
+    }
+
     // exige caminhamento
     public boolean contains(Integer e){
-        return false;
+        if(e==null)
+            throw new IllegalArgumentException("Valor passado é nulo");
+        if(raiz==null)
+            return false;
+
+        return (findNode(raiz,e)!=null);
     }
+
     // exige caminhamento
     public boolean isInternal(Integer e){
-        return false;
+        if(e==null)
+            throw new IllegalArgumentException("Valor passado é nulo");
+        Nodo aux = findNode(raiz,e);
+        if(aux==null)
+            return false;
+        return (!aux.filhos.isEmpty());
     }
+
     // exige caminhamento
     public boolean isExternal(Integer e){
-        return false;
+        if(e==null)
+            throw new IllegalArgumentException("Valor passado é nulo");
+        Nodo aux = findNode(raiz,e);
+        if(aux==null)
+            return false;
+        return (aux.filhos.isEmpty());
     }
 
     // exige caminhamento
@@ -298,6 +375,18 @@ public class ArvoreGenerica {
             System.out.println(ag);
         }
         */
-    }
+        System.out.println("contains(10): " + ag.contains(10));
+        System.out.println("contains(100): " + ag.contains(100));
 
+        System.out.println("isInternal(5): " + ag.isInternal(5));
+        System.out.println("isExternal(15): " + ag.isExternal(15));
+
+        System.out.println("\nRemove o ramo com raiz 5");
+        ag.removeBranch(5);
+        System.out.println("Árvore após remover o ramo 5: " + ag);
+
+        System.out.println("\nRemove a raiz");
+        ag.removeBranch(7);
+        System.out.println("Árvore após remover a raiz: " + ag);
+    }
 }
