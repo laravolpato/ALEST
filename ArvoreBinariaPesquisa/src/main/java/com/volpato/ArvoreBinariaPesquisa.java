@@ -121,12 +121,62 @@ public class ArvoreBinariaPesquisa {
     }    
     
     // Nao precisa ser implementado
+
+    private Nodo findNode(Nodo ref, int e){
+        if(ref!=null){
+            if(ref.valor==e) return ref;
+
+            if(e<=ref.valor) 
+                return findNode(ref.filhosDaEsquerda, e);
+            else
+                return findNode(ref.filhosDaDireita, e);
+        }
+        return null;
+    }
+
     public int level(Integer e){
-        return -1;        
+        if(e==null) return -1;
+        
+        Nodo aux = findNode(raiz, e);
+        if(aux==null) return -1;
+
+        int nivel=0;
+
+        while(aux.pai!=null){
+            nivel++;
+            aux=aux.pai;
+        }
+
+        return nivel;
+    }
+
+    private int navegaPelosNodos1(Nodo ref, int altura){ //custo nlogn
+
+        if(ref!=null) {
+
+            if((ref.filhosDaEsquerda==null)&&(ref.filhosDaDireita==null)){
+                int nvl=0;
+                Nodo aux=ref;
+                while(aux.pai!=null){
+                    nvl++;
+                    aux=aux.pai;
+                }
+
+                if(nvl>altura) return nvl;
+            }
+
+            else{
+                int nvlfilho = navegaPelosNodos1(ref.filhosDaEsquerda, altura);
+                nvlfilho =  navegaPelosNodos1(ref.filhosDaDireita, nvlfilho);
+                return nvlfilho;
+            }
+        }
+        return altura;
     }
 
     public int height(){
-        return -1;
+        //navega em preordem
+        return navegaPelosNodos1(raiz, -1);
     }
 
     public boolean removeBranch(Integer e){
@@ -263,6 +313,19 @@ public class ArvoreBinariaPesquisa {
         printArray( abp.positionsCentral());
         System.out.print("Largura  : ");
         printArray( abp.positionsWidth());
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     System.out.println("contains(3): " + abp.contains(3)); 
     System.out.println("contains(8): " + abp.contains(8));
