@@ -63,16 +63,6 @@ public class ArvoreBinariaPesquisa {
 
     }
 
-    private Nodo findNode(Nodo ref, Integer e){
-    if(ref == null) return null;
-    if(ref.valor == e) return ref;
-    else if(e < ref.valor)
-        return findNode(ref.filhosDaEsquerda, e);
-    else
-        return findNode(ref.filhosDaDireita, e);
-}
-
-
     public boolean isInternal(Integer e){
         Nodo n = findNode(raiz, e);
         if(n == null) return false;
@@ -134,9 +124,9 @@ public class ArvoreBinariaPesquisa {
         return null;
     }
 
-    public int level(Integer e){
+     public int level(Integer e){
         if(e==null) return -1;
-        
+
         Nodo aux = findNode(raiz, e);
         if(aux==null) return -1;
 
@@ -148,12 +138,14 @@ public class ArvoreBinariaPesquisa {
         }
 
         return nivel;
+        
     }
 
-    private int navegaPelosNodos1(Nodo ref, int altura){ //custo nlogn
+    private int navegaPelosNodos1(Nodo ref, int altura){
 
-        if(ref!=null) {
+        if(ref!=null){
 
+            // se for um nodo folha entao calcula o nivel
             if((ref.filhosDaEsquerda==null)&&(ref.filhosDaDireita==null)){
                 int nvl=0;
                 Nodo aux=ref;
@@ -161,22 +153,51 @@ public class ArvoreBinariaPesquisa {
                     nvl++;
                     aux=aux.pai;
                 }
-
+                // se o nivel atual for maior do altura, entao assume a nova altura
                 if(nvl>altura) return nvl;
             }
-
+            // senao navega para os filhos
             else{
-                int nvlfilho = navegaPelosNodos1(ref.filhosDaEsquerda, altura);
-                nvlfilho =  navegaPelosNodos1(ref.filhosDaDireita, nvlfilho);
+                int nvlfilho=navegaPelosNodos1(ref.filhosDaEsquerda, altura);
+                nvlfilho=navegaPelosNodos1(ref.filhosDaDireita, nvlfilho);
                 return nvlfilho;
             }
         }
         return altura;
     }
 
-    public int height(){
-        //navega em preordem
-        return navegaPelosNodos1(raiz, -1);
+    private int navegaPelosNodos2(Nodo ref, int altura){
+
+        if(ref!=null){
+            altura++;
+
+            // se for um nodo folha entao calcula o nivel
+            if((ref.filhosDaEsquerda==null)&&(ref.filhosDaDireita==null))
+                return altura;
+            // senao navega para os filhos
+            else{
+                int alturaSubarvoreE=navegaPelosNodos2(ref.filhosDaEsquerda, altura);
+                int alturaSubarvoreD=navegaPelosNodos2(ref.filhosDaDireita,  altura);
+
+                //return (alturaSubarvoreE>alturaSubarvoreD)?alturaSubarvoreE:alturaSubarvoreD;
+                if(alturaSubarvoreE>alturaSubarvoreD)
+                    return alturaSubarvoreE;
+                else
+                    return alturaSubarvoreD;
+            }
+        }
+        return altura;
+    }
+
+     public int height(){
+        // navega em pre ordem
+        // alternativas 1 e 2
+        //return navegaPelosNodos2(raiz, -1);
+
+        Integer[] largura = positionsWidth();
+        int altura = level(largura[largura.length-1]);
+        return altura;
+
     }
 
     public boolean removeBranch(Integer e){
@@ -296,14 +317,16 @@ public class ArvoreBinariaPesquisa {
     public static void main(String[] args) {
         ArvoreBinariaPesquisa abp = new ArvoreBinariaPesquisa();
 
-
-        abp.add(4);
-        abp.add(2);
-        abp.add(1);
-        abp.add(3);
-        abp.add(6);
-        abp.add(7);
-        abp.add(5);
+        abp.add(40);
+        abp.add(20);
+        abp.add(10);
+        abp.add(30);
+        abp.add(60);
+        abp.add(70);
+        abp.add(50);
+        abp.add(35);
+        abp.add(33);
+        abp.add(37);
 
         System.out.print("Pre ordem: ");
         printArray( abp.positionsPre());
@@ -314,43 +337,36 @@ public class ArvoreBinariaPesquisa {
         System.out.print("Largura  : ");
         printArray( abp.positionsWidth());
 
+        System.out.println("Nivel do nodo 35 = "+abp.level(35));
+        System.out.println("A altura da arvore = "+abp.height());
 
+        System.out.println("contains(33): " + abp.contains(33));
+        System.out.println("contains(100): " + abp.contains(100));
 
+        System.out.println("isInternal(20): " + abp.isInternal(20));
+        System.out.println("isInternal(30): " + abp.isInternal(30));
+        System.out.println("isInternal(35): " + abp.isInternal(35));
+        System.out.println("isInternal(33): " + abp.isInternal(33));
+        System.out.println("isInternal(55): " + abp.isInternal(55));
 
+        System.out.println("isExternal(10): " + abp.isExternal(10));
+        System.out.println("isExternal(37): " + abp.isExternal(37));
+        System.out.println("isExternal(40): " + abp.isExternal(40));
 
+        System.out.println("hasLeft(20): " + abp.hasLeft(20));
+        System.out.println("hasRight(20): " + abp.hasRight(20));
+        System.out.println("hasLeft(10): " + abp.hasLeft(10));
+        System.out.println("hasRight(10): " + abp.hasRight(10));
 
+        System.out.println("getLeft(20): " + abp.getLeft(20));
+        System.out.println("getRight(20): " + abp.getRight(20));
+        System.out.println("getLeft(30): " + abp.getLeft(30));
+        System.out.println("getRight(30): " + abp.getRight(30));
 
-
-
-
-
-
-
-
-    System.out.println("contains(3): " + abp.contains(3)); 
-    System.out.println("contains(8): " + abp.contains(8));
-
-    System.out.println("isInternal(4): " + abp.isInternal(4));
-    System.out.println("isInternal(7): " + abp.isInternal(7));
-
-    System.out.println("isExternal(1): " + abp.isExternal(1));
-    System.out.println("isExternal(2): " + abp.isExternal(2));
-
-    System.out.println("hasLeft(4): " + abp.hasLeft(4));
-    System.out.println("hasLeft(1): " + abp.hasLeft(1));
-
-    System.out.println("hasRight(2): " + abp.hasRight(2));
-    System.out.println("hasRight(7): " + abp.hasRight(7));
-
-    System.out.println("getLeft(4): " + abp.getLeft(4));
-    System.out.println("getLeft(3): " + abp.getLeft(3));
-
-    System.out.println("getRight(2): " + abp.getRight(2));
-    System.out.println("getRight(5): " + abp.getRight(5));
-
-    System.out.println("getParent(2): " + abp.getParent(2));
-    System.out.println("getParent(4): " + abp.getParent(4));
-    System.out.println("getParent(7): " + abp.getParent(7));
+        System.out.println("getParent(20): " + abp.getParent(20));
+        System.out.println("getParent(35): " + abp.getParent(35));
+        System.out.println("getParent(40): " + abp.getParent(40));
+        System.out.println("getParent(33): " + abp.getParent(33));
 
     }
 
